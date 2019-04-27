@@ -1,5 +1,5 @@
-cic-emacs-config: A collection of useful Emacs Lisp code
-========================================================
+cic-emacs-config: A collection of personal Emacs configuration files
+====================================================================
 
 This package provides the specific Emacs configuration that I
 (akroshko) use.  Although this code is specific to my configuration,

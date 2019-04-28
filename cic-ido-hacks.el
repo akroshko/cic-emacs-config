@@ -7,7 +7,7 @@
 ;; Author: Andrew Kroshko
 ;; Maintainer: Andrew Kroshko <akroshko.public+devel@gmail.com>
 ;; Created: Wed, Jan 03, 2018
-;; Version: 20190412
+;; Version: 20190427
 ;; URL: https://github.com/akroshko/cic-emacs-common
 
 ;; This program is free software; you can redistribute it and/or modify

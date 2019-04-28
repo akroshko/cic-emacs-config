@@ -43,6 +43,40 @@
 ;;
 ;;; Code:
 
+;; keys
+(define-key org-mode-map (kbd "C-c c") 'org-code-region)
+(define-key org-mode-map (kbd "C-c q") 'org-quote-region)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; custom todo commands
+
+;; TODO: move somewhere else?
+(define-key org-mode-map (kbd "H-t")   'cic:org-todo)
+;; (define-key org-mode-map (kbd "s-:")   'cic:org-todo)
+(define-key org-mode-map (kbd "C-H-t") 'cic:org-todo-set)
+(define-key org-mode-map (kbd "H-T")   'cic:org-todo-clear)
+;; (define-key org-mode-map (kbd "s-;")   'cic:org-todo-inprogress-done)
+(define-key org-mode-map (kbd "s-:")   'cic:org-todo-cycle-note)
+(define-key org-mode-map (kbd "s-'")   'cic:org-todo-cycle-done)
+(define-key org-mode-map (kbd "s-;")   'cic:org-todo-cycle-not-done)
+;; TODO: move keys somewhere better, decide...
+;; TODO: been overridden by something else
+;; (define-key org-mode-map (kbd "H-j") 'cic:org-meta-content-cycle)
+;; TODO: make better once I decide? show all children
+;; TODO: functions too
+;; don't use this?
+(define-key org-mode-map (kbd "H-s") 'cic:org-cycle-in-level-1-tree)
+
+(define-key org-mode-map (kbd "s-c o") 'cic:org-open-last-tree)
+
+(global-set-key [prior] 'scroll-down)
+(global-set-key [next]  'scroll-up)
+(global-set-key (kbd "S-<prior>") 'beginning-of-buffer)
+(global-set-key (kbd "S-<next>" ) 'end-of-buffer)
+
+(global-set-key (kbd "s-m a") 'cic:apt-show)
+
+;; a mode for some keys
 (define-minor-mode cic-emacs-keys-mode
   :global t
   ;; :lighter "Some standard keys."

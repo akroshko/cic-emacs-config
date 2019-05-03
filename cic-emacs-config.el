@@ -552,37 +552,38 @@ read only."
             'delete-other-windows))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; shell mode
-; commint
-(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-(setq shell-file-name "/bin/bash")
-(setq comint-scross-to-bottom-on-input t    ;; always insert at the bottom
-      comint-scroll-to-bottom-on-output nil ;; always add output at the bottom
-      comint-scroll-show-maximum-output t   ;; scroll to show max possible output
-      comint-input-ignoredups t             ;; no duplicates in command history
-      comint-completion-addsuffix t         ;; insert space/slash after file completion
-      comint-buffer-maximum-size 20000      ;; max length of the buffer in lines
-      comint-prompt-read-only nil           ;; if this is t, it breaks shell-command and many other things
-      comint-get-old-input (lambda () "")   ;; what to run when i press enter on a
-                                            ;; line above the current prompt
-      comint-input-ring-size 5000           ;; max shell history size
-      protect-buffer-bury-p nil)
+;; commint
+;; TODO: this breaks python...
+;; (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+;; (setq shell-file-name "/bin/bash")
+;; (setq comint-scross-to-bottom-on-input t    ;; always insert at the bottom
+;;       comint-scroll-to-bottom-on-output nil ;; always add output at the bottom
+;;       comint-scroll-show-maximum-output t   ;; scroll to show max possible output
+;;       comint-input-ignoredups t             ;; no duplicates in command history
+;;       comint-completion-addsuffix t         ;; insert space/slash after file completion
+;;       comint-buffer-maximum-size 20000      ;; max length of the buffer in lines
+;;       comint-prompt-read-only nil           ;; if this is t, it breaks shell-command and many other things
+;;       comint-get-old-input (lambda () "")   ;; what to run when i press enter on a
+;;                                             ;; line above the current prompt
+;;       comint-input-ring-size 5000           ;; max shell history size
+;;       protect-buffer-bury-p nil)
 ;; this tends to work best for shells in Emacs
 (setenv "PAGER" "cat")
 ;; truncate buffers continuously
-(add-hook 'comint-output-filter-functions 'comint-truncate-buffer)
+;; (add-hook 'comint-output-filter-functions 'comint-truncate-buffer)
 ;; track directory when cding in a shell
-(defun cic:track-shell-directory/procfs ()
-    (shell-dirtrack-mode 0)
-    (add-hook 'comint-preoutput-filter-functions
-              (lambda (str)
-                (prog1 str
-                  (when (string-match comint-prompt-regexp str)
-                    (cd (file-symlink-p
-                         (format "/proc/%s/cwd" (process-id
-                                                 (get-buffer-process
-                                                  (current-buffer)))))))))
-              nil t))
-(add-hook 'shell-mode-hook 'cic:track-shell-directory/procfs)
+;; (defun cic:track-shell-directory/procfs ()
+;;     (shell-dirtrack-mode 0)
+;;     (add-hook 'comint-preoutput-filter-functions
+;;               (lambda (str)
+;;                 (prog1 str
+;;                   (when (string-match comint-prompt-regexp str)
+;;                     (cd (file-symlink-p
+;;                          (format "/proc/%s/cwd" (process-id
+;;                                                  (get-buffer-process
+;;                                                   (current-buffer)))))))))
+;;               nil t))
+;; (add-hook 'shell-mode-hook 'cic:track-shell-directory/procfs)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; tramp-mode
 (setq tramp-default-method       "ssh"

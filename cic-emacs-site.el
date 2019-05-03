@@ -1,4 +1,4 @@
-;;; cic-emacs-site.el --- Configuring common external packages
+;; cic-emacs-site.el --- Configuring common external packages
 ;;  that I use.
 ;;
 ;; Copyright (C) 2015-2019, Andrew Kroshko, all rights reserved.
@@ -84,10 +84,18 @@ TODO broken, provided a diff cleanup function too!"
 (requiring-package (sh-script)
   ;; TODO: find another thing to run executable-interpret
   (define-key sh-mode-map (kbd "C-c C-x") nil)
-  ;; TOOD: remap to something better
-  (define-key sh-mode-map (kbd "M-q") (lambda ()
-                                        (interactive)
-                                        (message "M-q disabled in shell mode!")))
+  ;; TOOD: not done yet
+  (defun cic:sh-script-fill (&optional justify region)
+    (interactive)
+    (when (save-excursion
+            (beginning-of-line)
+            (looking-at "^[[:space:]]*#.*"))
+      ;; regions...
+      (fill-comment-paragraph justify))
+    t)
+  (defun cic:sh-script-fill-set-function ()
+    (setq-local fill-paragraph-function #'cic:sh-script-fill))
+  (add-hook 'sh-mode-hook 'cic:sh-script-fill-set-function)
   ;; my aliases often have
   (add-to-list 'sh-assignment-regexp '(bash . "\\<\\([[:alnum:]_-]+\\)\\(\\[.+\\]\\)?\\+?="))
   ;; XXXX: why did Emacs 25 feel the need to make this annoying mode default
@@ -163,24 +171,18 @@ TODO broken, provided a diff cleanup function too!"
   (define-key org-mode-map (kbd "M-.") 'clippy-org-describe))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; crontab-mode
-;; TODO: replace, not in melpa?
-;; (requiring-package (crontab-mode)
-;;   (add-to-list 'auto-mode-alist '("\\.cron\\(tab\\)?\\'" . crontab-mode))
-;;   (add-to-list 'auto-mode-alist '("cron\\(tab\\)?\\."    . crontab-mode))
-;;   ;; TODO: do I want anything else?
-;;   (add-to-list 'auto-mode-alist '("crontab"              . crontab-mode)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; company mode
-;; TODO: reenable
-;; (requiring-package (company)
-;;   (global-company-mode)
-;;   (company-quickhelp-mode 1)
-;;   ;; (add-hook 'after-init-hook 'global-company-mode)
-;;   ;; TODO: for now
-;;   ;; (define-key company-quickhelp-mode-map (kbd "s-q")  company-quickhelp-manual-begin)
-;;   )
+(requiring-package (company)
+  (global-company-mode)
+  (company-quickhelp-mode 1)
+  ;; TODO: add something other than F1 for 'company-show-doc-buffer, take out C-h (maybe s-h)
+  (define-key company-active-map (kbd "C-d") 'company-select-next)
+  (define-key company-active-map (kbd "C-e") 'company-select-previous)
+  (define-key company-active-map (kbd "M-.") 'company-show-doc-buffer)
+  (define-key company-active-map (kbd "M-.") 'company-show-doc-buffer)
+  (define-key company-active-map (kbd "M-,") 'company-show-location)
+  ;; (define-key company-quickhelp-mode-map (kbd "s-q")  company-quickhelp-manual-begin)
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; conkeror and javascript
@@ -496,16 +498,12 @@ flyspell-mode."
   (add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; site-specific lisp hooks
+;; site-specific lisp hooks and configurations
 ;; paredit and eldoc
-(defun lisp-mode-site ()
-  ;; (local-set-key (kbd "H-/") 'lisp-complete-symbol)
-  ;; TODO set up autocomplete sources
-  ;; (when (boundp 'ac-sources)
-  ;;   (add-to-list 'ac-sources 'ac-source-etags)))
-  )
-(add-hook 'emacs-lisp-mode-hook 'lisp-mode-site)
-(add-hook 'lisp-interaction-mode-hook 'lisp-mode-site)
+
+(define-key emacs-lisp-mode-map (kbd "M-.") 'cic:find-documentation-transient-window)
+(define-key emacs-lisp-mode-map (kbd "M-,") 'cic:find-definition-transient-window)
+
 (requiring-package (paredit)
   (autoload 'enable-paredit-mode "paredit"
     "Turn on pseudo-structural editing of Lisp code."
@@ -619,6 +617,17 @@ flyspell-mode."
   (add-to-list 'json-font-lock-keywords-1 (list cic:json-mode-comment-re 1 font-lock-warning-face)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; markdown-mode
+(requiring-package (markdown-mode)
+  (defun markdown-fill-paragraph--avoid-headings (orig-fun &rest args)
+    "Ensures that fill-paragraph (which I do by instinct even
+when inappropriate) is not called at markdown headings."
+    (if (markdown-heading-at-point)
+        t
+      (apply orig-fun args)))
+  (advice-add 'markdown-fill-paragraph :around #'markdown-fill-paragraph--avoid-headings))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; org-bullets
 ;; TODO: really slows stuff down
 (requiring-package (org-bullets)
@@ -641,11 +650,14 @@ flyspell-mode."
 ;; TODO: put into message box
 ;; TODO: navigate functions/defun
 (requiring-package (python)
+  ;; set up variables
+  ;; disable shell-completion for now, this seems to mess some stuff up
+  (setq python-shell-completion-native-enable nil)
   ;; set up python keys
   ;; TODO: figure this
   ;; (define-key python-mode-map (kbd "M-[") 'python-indent-shift-left)
   ;; (define-key python-mode-map (kbd "M-]") 'python-indent-shift-right)
-  (define-key python-mode-map (kbd "s-x c") 'cic:check-python)
+  ;; (define-key python-mode-map (kbd "s-x c") 'cic:check-python)
   (defun cic:check-python ()
     (interactive)
     (when (buffer-live-p (get-buffer "*cic-python-check*"))
@@ -732,48 +744,23 @@ flyspell-mode."
           (let ((theline (cic:get-current-line)))
             (cond ((string-match "sage.*python"  theline)
                    (setq-local python-shell-interpreter "sage")
-                   (setq-local python-shell-interpreter-args "-python -i"))
+                   (setq-local python-shell-interpreter-args "-ipython --profile=emacs_inferior --simple-prompt --colors=NoColor -i"))
                   ;; XXXX: match sage without Python
+                  ;; TODO: probably does not work
                   ((string-match "sage"  theline)
                    (setq-local python-shell-interpreter "sage")
                    (setq-local python-shell-interpreter-args ""))
                   ;; default is just default built-in python
                   (t
-                   (setq-local python-shell-interpreter "python")
-                   (setq-local python-shell-interpreter-args "-i")))))
+                   (setq-local python-shell-interpreter "ipython")
+                   (setq-local python-shell-interpreter-args "--profile=emacs_inferior --simple-prompt --colors=NoColor -i")))))
       (error (message "Error setting up inferior process!!!"))))
   ;; add the hook to detect interpretor
   (add-hook 'python-mode-hook 'python-detect-interpreter)
   ;; (add-hook 'python-mode-hook 'anaconda-mode)
   ;; (add-hook 'python-mode-hook 'eldoc-mode)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;;
-  ;; After installation of the spkg, you must add something like the
-  ;; following to your .emacs:
-  ;; XXXX: obviously this is specific to a particular installation
-  ;; TODO: maybe have a load log warning thing
-  ;; find latest installed sage and add to load path
-  (let ((sagedir (car (reverse (sort (remove-if-not (lambda (s) (when (string-match "sage-.*" s) s)) (directory-files "/opt" t)) 'string<)))))
-    (add-to-list 'load-path (concat sagedir "/local/share/emacs/site-lisp/sage-mode"))
-    ;; TODO: I will need to make my own sage version
-    (if (featurep 'sage)
-        (requiring-package (sage)
-          (require 'sage "sage")
-          ;; TODO: have an else for requiring-package
-          (add-to-list 'auto-mode-alist '("\\.sage$" . python-mode))
-          (add-to-list 'auto-mode-alist '("\\.spyx$" . python-mode)))
-      (message "Sage not found so not loaded!"))
-    (setq sage-command (concat sagedir "/sage"))
-    ;; If you want sage-view to typeset all your output and display plot()
-    ;; commands inline, uncomment the following line and configure sage-view:
-    ;; (add-hook 'sage-startup-after-prompt-hook 'sage-view)
-    ;; In particular customize the variable sage-view-default-commands.
-    ;; Using sage-view to typeset output requires a working LaTeX
-    ;; installation with the preview package.
-    ;; Also consider running (customize-group 'sage) to see more options.
-    )
-  ;; (define-key python-mode-map (kbd "C-c C-v") nil)
   )
+;; (define-key python-mode-map (kbd "C-c C-v") nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; rainbow
@@ -803,6 +790,16 @@ flyspell-mode."
   ;; Optionally, specify the lisp program you are using. Default is "lisp"
   (setq inferior-lisp-program "sbcl"))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; smartscan
+(requiring-package (smartscan)
+  (global-smartscan-mode -1)
+  (define-key smartscan-map (kbd "M-n") nil)
+  (define-key smartscan-map (kbd "M-p") nil)
+  (define-key smartscan-map (kbd "M-'") nil)
+  (define-key smartscan-map (kbd "C-n") 'smartscan-symbol-go-forward)
+  (define-key smartscan-map (kbd "C-p") 'smartscan-symbol-go-backward)
+  (global-smartscan-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; sql
@@ -844,31 +841,17 @@ flyspell-mode."
                          ("melpa" . "https://melpa.org/packages/")
                          ("org" . "http://orgmode.org/elpa/")))
 (setq package-check-signature nil
-      cic:package-list '(
-                         ;; apropos-fn+var
-                         ;; company-auctex
-                         ;; flymake-cursor
-                         ;; hexrgb
-                         ;; ido-grid-mode
-                         ;; ido-ubiquitous
-                         ;; ido-vertical-mode
-                         ;; ido-vertical-mode
+      cic:package-list '(company-auctex
+                         flymake-cursor
                          ;; image-dired+
                          ;; letcheck
                          ;; py-import-check
-                         ;; pylint
-                         ;; TODO get rid of
-                         ;; TODO: change to ido-completing-read+
                          ;; TODO: get rid of flymake
-                         ace-jump-mode
-                         ;; replaced with my own
-                         ;; annotate
                          apache-mode
                          apt-sources-list
                          arduino-mode
                          async
                          auctex
-                         auto-overlays
                          bash-completion
                          bbdb
                          bbdb-ext
@@ -878,23 +861,22 @@ flyspell-mode."
                          centered-cursor-mode
                          clippy
                          company
-                         ;; company-arduino
+                         company-arduino
                          company-c-headers
                          company-irony
                          company-math
                          company-quickhelp
                          conkeror-minor-mode
-                         ;; crontab-mode
+                         crontab-mode
                          csv-mode
                          cython-mode
                          dash
                          diff-hl
                          dired-avfs
                          dired-hacks-utils
-                         dired-icon
-                         dired-rainbow
+                         ;; dired-icon
+                         ;; dired-rainbow
                          eimp
-                         ;; eldoc
                          ;; emms
                          ;; emms-player-mpv
                          epl
@@ -908,25 +890,20 @@ flyspell-mode."
                          flycheck-pyflakes
                          flymake-cursor
                          free-keys
-                         ;; fuzzy-match
                          gh-md
                          ;; ghub
                          git-timemachine
                          gited
-                         ;; git-commit
                          gnuplot
                          gnuplot-mode
                          ido-completing-read+
                          ido-hacks
-                         ;; ido-ubiquitous
                          idomenu
                          image+
                          json-mode
                          ;; jumplist
-                         ;; lacarte
                          latex-extra
                          lua-mode
-                         ;; magit
                          markdown-mode
                          math-symbol-lists
                          matlab-mode
@@ -957,8 +934,6 @@ flyspell-mode."
                          ssh-tunnels
                          systemd
                          tracwiki-mode
-                         twittering-mode
-                         ;; vline
                          w3m
                          wanderlust
                          with-editor

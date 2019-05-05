@@ -383,7 +383,7 @@ read only."
 ;; should override company mode quickhelp, done elsewhere
 ;; TODO: make both work
 (define-key emacs-lisp-mode-map (kbd "C-x C-h") 'mark-defun)
-(define-key emacs-lisp-mode-map (kbd "M-,")     'find-function)
+;; (define-key emacs-lisp-mode-map (kbd "M-,")     'find-function)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ido
@@ -584,6 +584,17 @@ read only."
 ;;                                                   (current-buffer)))))))))
 ;;               nil t))
 ;; (add-hook 'shell-mode-hook 'cic:track-shell-directory/procfs)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; speedbar
+(requiring-package (speedbar)
+  (setq speedbar-update-flag t)
+  ;; TODO: change speedbar-frame-parameters to be wider
+  ;; TODO: https://www.emacswiki.org/emacs/SpeedBar
+  (setf (cdr (assoc 'width speedbar-frame-parameters)) 40)
+  (define-key speedbar-file-key-map (kbd "^") 'speedbar-up-directory)
+  (global-set-key (kbd "H-i") 'speedbar))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; tramp-mode
 (setq tramp-default-method       "ssh"

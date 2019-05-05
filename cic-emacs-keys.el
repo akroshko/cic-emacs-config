@@ -76,6 +76,9 @@
 
 (global-set-key (kbd "s-m a") 'cic:apt-show)
 
+;; tags and xref
+(global-set-key (kbd "M-.") 'cic:xref-find-definitions)
+
 ;; a mode for some keys
 (define-minor-mode cic-emacs-keys-mode
   :global t
@@ -130,7 +133,7 @@
             (define-key map (kbd "s-a v")        'apropos-value)
             (define-key map (kbd "s-c e")        'wdired-change-to-wdired-mode)
             (define-key map (kbd "s-<return>")   'ispell-word)
-            (define-key map (kbd "s-,")          'cic:wordlist-current-word-no-flyspell)
+            (define-key map (kbd "s-c w")        'cic:wordlist-current-word-no-flyspell)
             ;; generic emacs development
             (define-key map (kbd "s-e b")        'cic:elisp-eval-buffer)
             (define-key map (kbd "s-e i")        'ielm)

@@ -52,7 +52,11 @@
 ;;   (dbus-init-bus :session))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; things that don't require a require
+;; things that don't really require a require
+(requiring-package (cc-mode)
+  (define-key c-mode-map (kbd "C-h") 'c-electric-delete-forward)
+  (define-key c-mode-map (kbd "C-d") 'next-line))
+
 ;; TODO: move this
 (requiring-package (man)
   (define-key Man-mode-map (kbd ".") 'scroll-up)
@@ -131,44 +135,44 @@ TODO broken, provided a diff cleanup function too!"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bash-completion
-(requiring-package (bash-completion)
-  (bash-completion-setup))
+;; (requiring-package (bash-completion)
+;;   (bash-completion-setup))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; clippy
 ;; TODO: replace with something less silly
-(requiring-package (clippy)
-  ;; TODO: goofy, but put to something else
-  (global-set-key (kbd "M-.") 'cic:clippy-describe)
-  (defvar cic:clippy-last-show nil
-    "")
-  (defun cic:clippy-describe ()
-    (interactive)
-    (if (eq last-command 'cic:clippy-describe)
-        (if (eq cic:clippy-last-show 'function)
-            (progn
-              (call-interactively 'clippy-describe-variable)
-              (setq cic:clippy-last-show 'variable))
-          (progn
-            (call-interactively 'clippy-describe-function)
-            (setq cic:clippy-last-show 'function)))
-      (progn
-        (call-interactively 'clippy-describe-function)
-        (setq cic:clippy-last-show 'function))))
-  ;; gives the table heading when at a table
-  ;; TODO: find definition of words this way too
-  ;; TODO: add additional things it can describe
-  (defun clippy-org-describe ()
-    (interactive)
-    (when (org-at-table-p)
-      (let* ((the-string (cic:org-get-column-heading))
-             (the-string-filled (with-temp-buffer
-                                  (insert the-string)
-                                  (goto-char (point-min))
-                                  (fill-paragraph)
-                                  (buffer-substring (point-min) (point-max)))))
-        (clippy-say the-string-filled))))
-  (define-key org-mode-map (kbd "M-.") 'clippy-org-describe))
+;; (requiring-package (clippy)
+;;   ;; TODO: goofy, but put to something else
+;;   (global-set-key (kbd "M-.") 'cic:clippy-describe)
+;;   (defvar cic:clippy-last-show nil
+;;     "")
+;;   (defun cic:clippy-describe ()
+;;     (interactive)
+;;     (if (eq last-command 'cic:clippy-describe)
+;;         (if (eq cic:clippy-last-show 'function)
+;;             (progn
+;;               (call-interactively 'clippy-describe-variable)
+;;               (setq cic:clippy-last-show 'variable))
+;;           (progn
+;;             (call-interactively 'clippy-describe-function)
+;;             (setq cic:clippy-last-show 'function)))
+;;       (progn
+;;         (call-interactively 'clippy-describe-function)
+;;         (setq cic:clippy-last-show 'function))))
+;;   ;; gives the table heading when at a table
+;;   ;; TODO: find definition of words this way too
+;;   ;; TODO: add additional things it can describe
+;;   (defun clippy-org-describe ()
+;;     (interactive)
+;;     (when (org-at-table-p)
+;;       (let* ((the-string (cic:org-get-column-heading))
+;;              (the-string-filled (with-temp-buffer
+;;                                   (insert the-string)
+;;                                   (goto-char (point-min))
+;;                                   (fill-paragraph)
+;;                                   (buffer-substring (point-min) (point-max)))))
+;;         (clippy-say the-string-filled))))
+;;   (define-key org-mode-map (kbd "M-.") 'clippy-org-describe))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; company mode
@@ -178,9 +182,9 @@ TODO broken, provided a diff cleanup function too!"
   ;; TODO: add something other than F1 for 'company-show-doc-buffer, take out C-h (maybe s-h)
   (define-key company-active-map (kbd "C-d") 'company-select-next)
   (define-key company-active-map (kbd "C-e") 'company-select-previous)
-  (define-key company-active-map (kbd "M-.") 'company-show-doc-buffer)
-  (define-key company-active-map (kbd "M-.") 'company-show-doc-buffer)
-  (define-key company-active-map (kbd "M-,") 'company-show-location)
+  (define-key company-active-map (kbd "M-,") 'company-show-doc-buffer)
+  (define-key company-active-map (kbd "M-,") 'company-show-doc-buffer)
+  (define-key company-active-map (kbd "M-.") 'company-show-location)
   ;; (define-key company-quickhelp-mode-map (kbd "s-q")  company-quickhelp-manual-begin)
   )
 
@@ -501,8 +505,8 @@ flyspell-mode."
 ;; site-specific lisp hooks and configurations
 ;; paredit and eldoc
 
-(define-key emacs-lisp-mode-map (kbd "M-.") 'cic:find-documentation-transient-window)
-(define-key emacs-lisp-mode-map (kbd "M-,") 'cic:find-definition-transient-window)
+(define-key emacs-lisp-mode-map (kbd "s-,") 'cic:find-documentation-transient-window)
+(define-key emacs-lisp-mode-map (kbd "s-.") 'cic:find-definition-transient-window)
 
 (requiring-package (paredit)
   (autoload 'enable-paredit-mode "paredit"
@@ -651,90 +655,30 @@ when inappropriate) is not called at markdown headings."
 ;; TODO: navigate functions/defun
 (requiring-package (python)
   ;; set up variables
-  ;; disable shell-completion for now, this seems to mess some stuff up
+  ;; disable shell-completion for now, this seems to mess some stuff up badly
   (setq python-shell-completion-native-enable nil)
+  ;; TODO: not sure I need this
+  ;; (setq comint-dynamic-complete-functions nil)
+  ;; was '(comint-c-a-p-replace-by-expanded-history comint-filename-completion), which seem to cause problems
   ;; set up python keys
   ;; TODO: figure this
   ;; (define-key python-mode-map (kbd "M-[") 'python-indent-shift-left)
   ;; (define-key python-mode-map (kbd "M-]") 'python-indent-shift-right)
   ;; (define-key python-mode-map (kbd "s-x c") 'cic:check-python)
-  (defun cic:check-python ()
-    (interactive)
-    (when (buffer-live-p (get-buffer "*cic-python-check*"))
-      (with-current-buffer-erase "*cic-python-check*"
-                                 (goto-char (point-min))))
-    (let ((return-code (call-process "python" nil "*cic-python-check*" nil "-m" "py_compile" buffer-file-name)))
-      (if (equal return-code 0)
-          (message "Syntax check passed!!!")
-        ;; TODO: flash if failed...
-        ;; (message "***!!!Syntax check failed!!!***")
-        (message (with-current-buffer "*cic-python-check*" (buffer-substring (point-min) (point-max)))))))
-  (defconst python-fulldoc-setup-code
-    "def __PYDOC_get_fulldoc(obj):
-    try:
-        import inspect
-        if hasattr(obj, 'startswith'):
-            obj = eval(obj, globals())
-        doc = inspect.getdoc(obj)
-        if not doc and callable(obj):
-            target = None
-            if inspect.isclass(obj) and hasattr(obj, '__init__'):
-                target = obj.__init__
-                objtype = 'class'
-            else:
-                target = obj
-                objtype = 'def'
-            if target:
-                args = inspect.formatargspec(
-                    *inspect.getargspec(target)
-                )
-                name = obj.__name__
-                doc = '{objtype} {name}{args}'.format(
-                    objtype=objtype, name=name, args=args
-                )
-    except:
-        doc = ''
-    try:
-        exec('print doc')
-    except SyntaxError:
-        print(doc)"
-    "Python code to setup full documentation retrieval.")
+  ;; (defun cic:check-python ()
+  ;;   (interactive)
+  ;;   (when (buffer-live-p (get-buffer "*cic-python-check*"))
+  ;;     (with-current-buffer-erase "*cic-python-check*"
+  ;;                                (goto-char (point-min))))
+  ;;   (let ((return-code (call-process "python" nil "*cic-python-check*" nil "-m" "py_compile" buffer-file-name)))
+  ;;     (if (equal return-code 0)
+  ;;         (message "Syntax check passed!!!")
+  ;;       ;; TODO: flash if failed...
+  ;;       ;; (message "***!!!Syntax check failed!!!***")
+  ;;       (message (with-current-buffer "*cic-python-check*" (buffer-substring (point-min) (point-max)))))))
 
-  (defconst python-fulldoc-string-code
-    "__PYDOC_get_fulldoc('''%s''')\n"
-    "Python code used to get the full documentation string of an object.")
-
-  (defun python-fulldoc-at-point (symbol)
-    (interactive
-     (let ((symbol (python-info-current-symbol t))
-           (enable-recursive-minibuffers t))
-       (list (read-string (if symbol
-                              (format "Describe symbol (default %s): " symbol)
-                            "Describe symbol: ")
-                          nil nil symbol))))
-    (python-shell-send-string python-fulldoc-setup-code (python-shell-get-process))
-    (let ((fulldocs (python-shell-send-string-no-output (format python-fulldoc-string-code symbol) (python-shell-get-process))))
-      (with-current-buffer-create "*Python docstring*"
-        (let ((inhibit-read-only t))
-          (special-mode)
-          (erase-buffer)
-          (insert fulldocs)
-          (insert "\n")
-          (goto-char (point-min))))
-      (pop-to-buffer (get-buffer "*Python docstring*"))))
-
-  ;; add hook to detect interpretor
-  (defun python-eldoc-setup ()
-    ;; remove any old advice
-    (advice-add 'python-shell-get-or-create-process :around #'python-shell-get-or-create-process--non-interactive)
-    (python-shell-send-buffer)
-    (eldoc-mode)
-    (advice-remove 'python-shell-get-or-create-process #'python-shell-get-or-create-process--non-interactive)
-    ;; XXXX: change name
-    (define-key python-mode-map (kbd "C-c h") 'python-fulldoc-at-point))
-
-  (defun python-shell-get-or-create-process--non-interactive (orig-fun &rest args)
-    (funcall orig-fun (python-shell-parse-command) nil nil))
+  ;; (setq python-shell-interpreter "ipython")
+  ;; (setq python-shell-interpreter-args "--profile=emacs_inferior --simple-prompt --colors=NoColor -i")
 
   (defun python-detect-interpreter ()
     ;; read first line for shebang
@@ -744,7 +688,9 @@ when inappropriate) is not called at markdown headings."
           (let ((theline (cic:get-current-line)))
             (cond ((string-match "sage.*python"  theline)
                    (setq-local python-shell-interpreter "sage")
-                   (setq-local python-shell-interpreter-args "-ipython --profile=emacs_inferior --simple-prompt --colors=NoColor -i"))
+                   (setq-local python-shell-interpreter-args "-python" "-i")
+                   ;; (setq-local python-shell-interpreter-args "-ipython --profile=emacs_inferior --simple-prompt --colors=NoColor -i")
+                   )
                   ;; XXXX: match sage without Python
                   ;; TODO: probably does not work
                   ((string-match "sage"  theline)
@@ -852,7 +798,8 @@ when inappropriate) is not called at markdown headings."
                          arduino-mode
                          async
                          auctex
-                         bash-completion
+                         ;; conflicts with shells such as Python
+                         ;; bash-completion
                          bbdb
                          bbdb-ext
                          benchmark-init
@@ -896,7 +843,8 @@ when inappropriate) is not called at markdown headings."
                          gited
                          gnuplot
                          gnuplot-mode
-                         ido-completing-read+
+                         ;; TODO: may interfere with comint
+                         ;; ido-completing-read+
                          ido-hacks
                          idomenu
                          image+

@@ -6,7 +6,7 @@
 ;; Author: Andrew Kroshko
 ;; Maintainer: Andrew Kroshko <akroshko.public+devel@gmail.com>
 ;; Created: Fri Mar 27, 2015
-;; Version: 20190427
+;; Version: 20190508
 ;; URL: https://github.com/akroshko/cic-emacs-common
 ;;
 ;; This file is NOT part of GNU Emacs.
@@ -66,7 +66,6 @@
 ;; TODO: functions too
 ;; don't use this?
 (define-key org-mode-map (kbd "H-s") 'cic:org-cycle-in-level-1-tree)
-
 (define-key org-mode-map (kbd "s-c o") 'cic:org-open-last-tree)
 
 (global-set-key [prior] 'scroll-down)
@@ -78,6 +77,9 @@
 
 ;; tags and xref
 (global-set-key (kbd "M-.") 'cic:xref-find-definitions)
+
+;; minibuffer
+(define-key minibuffer-local-map (kbd "H-x") 'cic:kill-region-only-active)
 
 ;; a mode for some keys
 (define-minor-mode cic-emacs-keys-mode
@@ -124,7 +126,7 @@
             (define-key map (kbd "s-%")          'cic:query-replace-case-sensitive)
             (define-key map (kbd "s-*")          'cic:recalculate)
             ;; TODO: fix this
-            (define-key map (kbd "s-=")          (lambda () (interactive) (what-cursor-position t)))
+            (define-key map (kbd "s-=")          (command-with-args 'what-cursor-position t))
             (define-key map (kbd "s-a a")        'apropos)
             (define-key map (kbd "s-a s-a")      'apropos)
             ;; TODO: choose one of these
@@ -163,7 +165,7 @@
             (define-key map (kbd "s-o g")        'cic:browse-url-at-point-chromium)
             (define-key map (kbd "s-o w")        'cic:browse-url-at-point-w3m)
             ;; TODO: move this and rename
-            (define-key map (kbd "s-p p s")      (lambda () (interactive) (profiler-start 'cpu)))
+            (define-key map (kbd "s-p p s")      (command-with-args 'profiler-start 'cpu))
             (define-key map (kbd "s-p p r")      'profiler-report)
             (define-key map (kbd "s-5")          'toggle-case-fold-search)
             (define-key map (kbd "s-0")          'cic:copy-file-name-to-kill-ring)

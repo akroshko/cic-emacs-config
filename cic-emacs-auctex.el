@@ -252,22 +252,14 @@
                    (define-key TeX-mode-map (kbd "s-c f")   'cic:current-compile-full)
                    (define-key TeX-mode-map (kbd "C-c C-b") 'cic:current-compile)
                    ;; TODO: want function symbol instead of lambda for this
-                   (define-key TeX-mode-map (kbd "s-B")     '(lambda ()
-                                                               (interactive)
-                                                               (TeX-command "BibTeX" 'TeX-master-file nil)))
-                   (define-key TeX-mode-map (kbd "s-x b")   '(lambda ()
-                                                               (interactive)
-                                                               (TeX-command "BibTeX" 'TeX-master-file nil)))
-                   (define-key TeX-mode-map (kbd "s-x c")    '(lambda ()
-                                                                (interactive)
-                                                                (TeX-command "LaTeXdraft" 'TeX-master-file nil)))
+                   (define-key TeX-mode-map (kbd "s-B")     (command-with-args 'TeX-command "BibTeX" 'TeX-master-file nil))
+                   (define-key TeX-mode-map (kbd "s-x b")   (command-with-args 'TeX-command "BibTeX" 'TeX-master-file nil))
+                   (define-key TeX-mode-map (kbd "s-x c")   (command-with-args 'TeX-command "LaTeXdraft" 'TeX-master-file nil))
                    ;; TODO: do I ever want this back, should I replace something else?
                    ;; (define-key TeX-mode-map (kbd "C-c C-b")  )
                    ;; prevent tex mode from overwriting next/previous error
-                   (define-key TeX-mode-map (kbd "s-N") (lambda () (interactive)
-                                                          (call-interactively 'next-error)))
-                   (define-key TeX-mode-map  (kbd "s-P") (lambda () (interactive)
-                                                           (call-interactively 'previous-error)))))
+                   (define-key TeX-mode-map (kbd "s-N")     'next-error)
+                   (define-key TeX-mode-map  (kbd "s-P")    'previous-error)))
 
 
 

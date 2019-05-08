@@ -5,7 +5,7 @@
 ;; Author: Andrew Kroshko
 ;; Maintainer: Andrew Kroshko <akroshko.public+devel@gmail.com>
 ;; Created: Fri Mar 27, 2015
-;; Version: 20190427
+;; Version: 20190508
 ;; URL: https://github.com/akroshko/cic-emacs-common
 ;;
 ;; This file is NOT part of GNU Emacs.
@@ -269,7 +269,7 @@ read only."
 ;; I use other computers I have muscle memory for these shortcuts
 ;; unset default keys, will set these as something else eventually
 (global-set-key (kbd "C-M-b")              nil)
-(global-set-key (kbd "C-n")                nil)
+;; (global-set-key (kbd "C-n")                nil)
 (global-set-key (kbd "C-p")                nil)
 (global-set-key (kbd "M-b")                nil)
 (global-set-key (kbd "C-w")                nil)
@@ -553,7 +553,7 @@ read only."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; shell mode
 ;; commint
-;; TODO: this breaks python...
+;; TODO: reenable these...
 ;; (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 ;; (setq shell-file-name "/bin/bash")
 ;; (setq comint-scross-to-bottom-on-input t    ;; always insert at the bottom
@@ -567,6 +567,8 @@ read only."
 ;;                                             ;; line above the current prompt
 ;;       comint-input-ring-size 5000           ;; max shell history size
 ;;       protect-buffer-bury-p nil)
+(define-key comint-mode-map (kbd "C-d") 'next-line)
+(define-key comint-mode-map (kbd "C-h") 'comint-delchar-or-maybe-eof)
 ;; this tends to work best for shells in Emacs
 (setenv "PAGER" "cat")
 ;; truncate buffers continuously

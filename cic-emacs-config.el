@@ -336,9 +336,6 @@ read only."
                                 ".pyd" ".pyc" ".sage.py"))
   (setq dired-listing-switches "--group-directories-first -ahlv")
   (define-key dired-mode-map (kbd "M-o") 'dired-omit-mode)
-  ;; TODO: I may not want to keep this key remapping
-  (define-key dired-mode-map (kbd "r")   'revert-buffer)
-  (define-key dired-mode-map (kbd "g")   nil)
   (defun cic:dired-mode-minor-modes ()
     (dired-omit-mode 1)
     (hl-line-mode 1))

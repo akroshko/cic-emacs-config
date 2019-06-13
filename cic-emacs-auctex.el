@@ -252,9 +252,9 @@
                    (define-key TeX-mode-map (kbd "s-c f")   'cic:current-compile-full)
                    (define-key TeX-mode-map (kbd "C-c C-b") 'cic:current-compile)
                    ;; TODO: want function symbol instead of lambda for this
-                   (define-key TeX-mode-map (kbd "s-B")     (command-with-args 'TeX-command "BibTeX" 'TeX-master-file nil))
-                   (define-key TeX-mode-map (kbd "s-x b")   (command-with-args 'TeX-command "BibTeX" 'TeX-master-file nil))
-                   (define-key TeX-mode-map (kbd "s-x c")   (command-with-args 'TeX-command "LaTeXdraft" 'TeX-master-file nil))
+                   ;; (define-key TeX-mode-map (kbd "s-B")     (command-with-args 'TeX-command "BibTeX" TeX-master-file nil))
+                   (define-key TeX-mode-map (kbd "s-c b")   (command-with-args 'TeX-command "BibTeX" TeX-master-file nil))
+                   ;; (define-key TeX-mode-map (kbd "s-x c")   (command-with-args 'TeX-command "LaTeXdraft" TeX-master-file nil))
                    ;; TODO: do I ever want this back, should I replace something else?
                    ;; (define-key TeX-mode-map (kbd "C-c C-b")  )
                    ;; prevent tex mode from overwriting next/previous error

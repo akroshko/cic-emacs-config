@@ -51,7 +51,13 @@
 ;;   (dbus-init-bus :system)
 ;;   (dbus-init-bus :session))
 
-;; TODO: small change to file
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; unloading
+;; I don't like doc-view because accidentally hitting the wrong document can run my system out of memory
+(when (featurep 'org-docview)
+  (unload-feature 'org-docview))
+(when (featurep 'doc-view)
+  (unload-feature 'doc-view))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; things that don't really require a require
@@ -194,17 +200,17 @@ TODO broken, provided a diff cleanup function too!"
 ;; conkeror and javascript
 
 (requiring-package (js)
-  (autoload 'conkeror-minor-mode "conkeror-minor-mode")
-                                        ; (add-hook 'js-mode-hook 'conkeror-minor-mode)
-  (add-hook 'js-mode-hook 'cic:js-init-conkeror-minor-mode)
-  (defun cic:js-init-conkeror-minor-mode ()
-    (when (and buffer-file-name (string-match "conkeror" buffer-file-name))
-      (conkeror-minor-mode 1)))
-  (add-hook 'js-mode-hook 'cic:js-mode-disable-electic-indent)
+  (requiring-package (conkeror-minor-mode)
+    ;; (autoload 'conkeror-minor-mode "conkeror-minor-mode")
+    (defun cic:js-init-conkeror-minor-mode ()
+      (when (and buffer-file-name (string-match "conkeror" buffer-file-name))
+        (conkeror-minor-mode 1)))
+    (add-hook 'js-mode-hook 'cic:js-init-conkeror-minor-mode)
+    (add-to-list 'conkeror--font-lock-keywords '("\\(p\\(?:age_mode_deactivate\\)\\)\\s-*(" 1 font-lock-function-name-face)))
   (defun cic:js-mode-disable-electic-indent ()
     ;; TODO: electric-indent-just-newline would be nice
     (electric-indent-local-mode 0))
-
+  (add-hook 'js-mode-hook 'cic:js-mode-disable-electic-indent)
   (add-to-list 'auto-mode-alist '("\\.jsx$" . js-mode)))
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -501,7 +507,8 @@ flyspell-mode."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; nxml
 (requiring-package (nxml-mode)
-  (add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode)))
+  (add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode))
+  (define-key nxml-mode-map (kbd "M-h") 'kill-word))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; site-specific lisp hooks and configurations
@@ -745,9 +752,53 @@ when inappropriate) is not called at markdown headings."
   (define-key smartscan-map (kbd "M-n") nil)
   (define-key smartscan-map (kbd "M-p") nil)
   (define-key smartscan-map (kbd "M-'") nil)
-  (define-key smartscan-map (kbd "C-n") 'smartscan-symbol-go-forward)
-  (define-key smartscan-map (kbd "C-p") 'smartscan-symbol-go-backward)
-  (global-smartscan-mode 1))
+  (define-key smartscan-map (kbd "C-n") 'cic:smartscan-symbol-or-region-go-forward)
+  (define-key smartscan-map (kbd "C-p") 'cic:smartscan-symbol-or-region-go-backward)
+  (global-smartscan-mode 1)
+
+  (defun cic:smartscan-symbol-or-region-go-forward ()
+    "If region active, go smartscan forward in that regions.
+Useful for strings that don't fit nicely as words or symbols."
+    (interactive)
+    (cond ((region-active-p)
+           (let ((region-beg (region-beginning))
+                 (region-end (region-end)))
+             (set-mark region-beg)
+             (goto-char region-end)
+             (activate-mark))
+           (let ((the-region-string (buffer-substring (region-beginning) (region-end))))
+             (setq mark-active nil)
+             (smartscan-symbol-goto the-region-string 'forward)
+             (save-excursion
+               (re-search-backward the-region-string)
+               (set-mark (point))
+               (goto-char (+ (point) (length the-region-string)))
+               (activate-mark))))
+          (t
+           (setq cic:smartscan-last-region nil)
+           (smartscan-symbol-go-forward)))))
+
+  (defun cic:smartscan-symbol-or-region-go-backward ()
+    "If region active, go smartscan backwards in that regions.
+Useful for strings that don't fit nicely as words or symbols."
+    (interactive)
+    (cond ((region-active-p)
+           (let ((region-beg (region-beginning))
+                 (region-end (region-end)))
+             (set-mark region-end)
+             (goto-char region-beg)
+             (activate-mark))
+           (let ((the-region-string (buffer-substring (region-beginning) (region-end))))
+             (setq mark-active nil)
+             (smartscan-symbol-goto the-region-string 'backward)
+             (save-excursion
+               (re-search-forward the-region-string)
+               (set-mark (point))
+               (goto-char (+ (point) (length the-region-string)))
+               (activate-mark))))
+          (t
+           (setq cic:smartscan-last-region nil)
+           (smartscan-symbol-go-backward))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; sql

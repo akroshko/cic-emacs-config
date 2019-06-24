@@ -65,7 +65,7 @@
 ;; TODO: make better once I decide? show all children
 ;; TODO: functions too
 ;; don't use this?
-(define-key org-mode-map (kbd "H-s") 'cic:org-cycle-in-level-1-tree)
+;; (define-key org-mode-map (kbd "H-s") 'cic:org-cycle-in-level-1-tree)
 (define-key org-mode-map (kbd "s-c o") 'cic:org-open-last-tree)
 
 (global-set-key [prior] 'scroll-down)
@@ -187,9 +187,9 @@
             (define-key map (kbd "H-x")          'cic:kill-region-only-active)
             ;; TODO: don't really like this, it doesn't "flow" because too long of a reach
             (define-key map (kbd "H-g")          'cic:kill-transient-windows)
-            (define-key map (kbd "H-z")          'scroll-down-command)
-            (define-key map (kbd "H-l")          'downcase-word)
-            (define-key map (kbd "H-u")          'upcase-word)
+            ;; (define-key map (kbd "H-z")          'scroll-down-command)
+            ;; (define-key map (kbd "H-l")          'downcase-word)
+            ;; (define-key map (kbd "H-u")          'upcase-word)
             ;; universal align
             (define-key map (kbd "H-q")          'align-current)
             map))

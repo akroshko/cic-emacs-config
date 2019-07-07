@@ -169,6 +169,8 @@
             (define-key map (kbd "s-p p r")      'profiler-report)
             (define-key map (kbd "s-5")          'toggle-case-fold-search)
             (define-key map (kbd "s-0")          'cic:copy-file-name-to-kill-ring)
+            ;; universal align
+            (define-key map (kbd "s-q")          'align-current)
             ;; TODO: I dont' use some of these much
             (define-key map (kbd "H->")          'next-buffer)
             (define-key map (kbd "H-<")          'previous-buffer)
@@ -190,8 +192,6 @@
             ;; (define-key map (kbd "H-z")          'scroll-down-command)
             ;; (define-key map (kbd "H-l")          'downcase-word)
             ;; (define-key map (kbd "H-u")          'upcase-word)
-            ;; universal align
-            (define-key map (kbd "H-q")          'align-current)
             map))
 (global-unset-key (kbd "<C-down-mouse-1>"))
 (define-key isearch-mode-map (kbd "M-/") 'isearch-repeat-forward)
@@ -221,7 +221,8 @@
   :global t
   :keymap (let ((map (make-sparse-keymap)))
             (define-key map (kbd "M-o")     'cic:occur-in-buffer)
-            (define-key map (kbd "H-d") 'cic:insert-date-time-stamp)
+            ;; TODO: used globally for something else
+            ;; (define-key map (kbd "H-d") 'cic:insert-date-time-stamp)
             map))
 
 (defun wdired-change-to-dired-mode--disable-keys (orig-fun &rest args)

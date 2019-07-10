@@ -80,6 +80,10 @@
 
 ;; minibuffer
 (define-key minibuffer-local-map (kbd "H-x") 'cic:kill-region-only-active)
+;; TODO: move somewhere else?
+(define-key minibuffer-local-map (kbd "M-s")   'cic:backward-symbol)
+;; this really helps diagnose problems and mismappings in the minibuffer
+(define-key minibuffer-local-map (kbd "s-h k") 'describe-key)
 
 ;; a mode for some keys
 (define-minor-mode cic-emacs-keys-mode
@@ -181,7 +185,7 @@
             (define-key map (kbd "H-$")          'cic:flyspell-word)
             (define-key map (kbd "H-<return>")   'cic:flyspell-word)
             (define-key map (kbd "H-S-<return>") 'flyspell-goto-next-error)
-            (define-key map (kbd "H-,")          'cic:wordlist-current-word)
+            ;; (define-key map (kbd "H-,")          'cic:wordlist-current-word)
             (define-key map (kbd "H-\\")         'indent-sexp)
             (define-key map (kbd "H-b")          'ido-switch-buffer)
             (define-key map (kbd "H-SPC")        'set-mark-command)

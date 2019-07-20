@@ -376,9 +376,9 @@
             (define-key map (kbd "H-]") 'cic:next-window-frame)
             (define-key map (kbd "H-[") 'cic:prev-window-frame)
             ;; window management
-            ;; TODO: these can be better
-            (define-key map (kbd "H-p") 'windmove-up)
-            (define-key map (kbd "H-n") 'windmove-down)
+            ;; TODO: these can be better or different
+            ;; (define-key map (kbd "H-p") 'windmove-up)
+            ;; (define-key map (kbd "H-n") 'windmove-down)
             (define-key map (kbd "H-<backspace>") 'delete-frame)
             map))
 

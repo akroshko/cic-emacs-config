@@ -6,7 +6,7 @@
 ;; Author: Andrew Kroshko
 ;; Maintainer: Andrew Kroshko <akroshko.public+devel@gmail.com>
 ;; Created: Thu, Aug 27, 2015
-;; Version: 20190508
+;; Version: 20190804
 ;; URL: https://github.com/akroshko/cic-emacs-common
 ;;
 ;; This file is NOT part of GNU Emacs.
@@ -58,6 +58,8 @@
   (unload-feature 'org-docview))
 (when (featurep 'doc-view)
   (unload-feature 'doc-view))
+;; disable docview
+(add-to-list 'auto-mode-alist '("\\.pdf\\'\\|\\.djvu\\'" . fundamental-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; things that don't really require a require
@@ -516,7 +518,8 @@ flyspell-mode."
 
 (define-key emacs-lisp-mode-map (kbd "s-,") 'cic:find-documentation-transient-window)
 (define-key emacs-lisp-mode-map (kbd "s-.") 'cic:find-definition-transient-window)
-
+(add-to-list 'auto-mode-alist '("zile"  . emacs-lisp-mode))
+(add-to-list 'auto-mode-alist '(".zile" . emacs-lisp-mode))
 (requiring-package (paredit)
   (autoload 'enable-paredit-mode "paredit"
     "Turn on pseudo-structural editing of Lisp code."
@@ -590,10 +593,19 @@ flyspell-mode."
     (defun ido-disable-line-truncation ()
       (set (make-local-variable 'truncate-lines) nil))
     (add-hook 'ido-minibuffer-setup-hook 'ido-disable-line-truncation)
+    (defvar cic:ido-exit-symbol
+      nil
+      "An exit symbol for ido.")
     ;; TODO: are there keys I should disable and remove
+    (defun cic:ido-goback ()
+      (interactive)
+      (setq cic:ido-exit-symbol 'goback)
+      (exit-minibuffer))
     (defun ido-define-keys ()
+      (setq cic:ido-exit-symbol nil)
       ;; TODO: ido-fallback command?
       ;; (define-key ido-completion-map (kbd "C-n")       'ido-next-match)
+      (define-key ido-completion-map (kbd "C-2")       'cic:ido-goback)
       (define-key ido-completion-map (kbd "H-f")       'ido-next-match)
       ;; (define-key ido-completion-map (kbd "C-p")       'ido-prev-match)
       (define-key ido-completion-map (kbd "H-r")       'ido-prev-match)

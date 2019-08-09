@@ -104,21 +104,15 @@
                          '((output-dvi "DVI Viewer")
                            (output-pdf "zathura")
                            (output-html "HTML Viewer")))
-                   (defun cic:view-alternate ()
-                     (interactive)
-                     (let ((TeX-view-program-selection '((output-dvi "DVI Viewer")
-                                                         ;; (output-pdf "Evince")
-                                                         (output-html "HTML Viewer"))))
-                       (TeX-view)))
-                   ;; TODO: a decision must be made which is most convienient
-                   (define-key TeX-mode-map (kbd "C-c M-v")   'cic:view-alternate)
+                   ;; TODO: moved elsewhere
+                   ;; (defun cic:view-alternate ()
+                   ;;   (interactive)
+                   ;;   (let ((TeX-view-program-selection '((output-dvi "DVI Viewer")
+                   ;;                                       ;; (output-pdf "Evince")
+                   ;;                                       (output-html "HTML Viewer"))))
+                   ;;     (TeX-view)))
                    (define-key TeX-mode-map (kbd "s-c v")     'TeX-view)
-                   ;; ;; TODO: replace elsewhere too
-                   ;; this conflicts with keys I like
-                   ;; (define-key TeX-mode-map (kbd "s-c s-c")   'TeX-view)
-                   ;; (define-key TeX-mode-map (kbd "s-c c")     'TeX-view)
                    (define-key TeX-mode-map (kbd "s-c s-v")   'TeX-view)
-                   (define-key TeX-mode-map (kbd "s-c M-s-v") 'cic:view-alternate)
                    (defun cic:reftex-reference ()
                      (interactive)
                      (let ((reftex-refstyle "\\ref"))
@@ -163,7 +157,8 @@
                      (local-set-key (kbd "s-c o") 'cic:switch-to-process-buffer)
                      ;; init crossref and such
                      (reftex-parse-all)
-                     (dolist (file (reftex-get-bibfile-list))
+                     ;; TODO: this ignore-errors is not great, but I may not use reftex again and it stops issues in many places
+                     (dolist (file (ignore-errors (reftex-get-bibfile-list)))
                        (reftex-get-file-buffer-force file))
                      ;; XXXX: adds colon as symbol constituent too
                      (modify-syntax-entry ?: "w"))

@@ -114,6 +114,18 @@
       (set-face-background 'mode-line "#00ffff")
       (set-face-background 'modeline-inactive "#ff00ff"))))
 (add-hook 'before-make-frame-hook 'cic:configure-modeline-color)
+(defvar-local cic:modeline-color-remapped
+  nil
+  "Stores the cookie from remapping the modeline face.")
+(defun cic:configure-local-modeline-color ()
+  (if (and buffer-read-only (not cic:modeline-color-remapped))
+      (setq-local cic:modeline-color-remapped (face-remap-add-relative 'mode-line :background "turquoise"))
+    (when (and (not buffer-read-only) cic:modeline-color-remapped)
+      (face-remap-remove-relative cic:modeline-color-remapped)
+      (setq-local cic:modeline-color-remapped nil))))
+;; TODO: probably more efficient way to do this
+(add-hook 'post-command-hook       'cic:configure-local-modeline-color)
+
 ;; run for when starting without server
 (cic:configure-modeline-color)
 
@@ -336,6 +348,7 @@ read only."
                                 ".pyd" ".pyc" ".sage.py"))
   (setq dired-listing-switches "--group-directories-first -ahlv")
   (define-key dired-mode-map (kbd "M-o") 'dired-omit-mode)
+  (define-key dired-mode-map [mouse-2] nil)
   (defun cic:dired-mode-minor-modes ()
     (dired-omit-mode 1)
     (hl-line-mode 1))

@@ -79,7 +79,8 @@
 (global-set-key (kbd "M-.") 'cic:xref-find-definitions)
 
 ;; minibuffer
-(define-key minibuffer-local-map (kbd "H-x") 'cic:kill-region-only-active)
+(define-key minibuffer-local-map (kbd "H-x")   'cic:kill-region-only-active)
+(define-key minibuffer-local-map (kbd "s-SPC") 'exit-minibuffer)
 ;; TODO: move somewhere else?
 (define-key minibuffer-local-map (kbd "M-s")   'cic:backward-symbol)
 ;; this really helps diagnose problems and mismappings in the minibuffer
@@ -121,6 +122,9 @@
             (define-key map (kbd "C--")          'text-scale-decrease)
             (define-key map (kbd "C-=")          'cic:text-scale-neutral)
             (define-key map (kbd "C-+")          'text-scale-increase)
+            (define-key map (kbd "s-SPC")        'ido-switch-buffer)
+            (define-key map (kbd "s-M-SPC")      'delete-window)
+            ;; (define-key map (kbd "s-SPC")        'scroll-up)
             ;; great for scanning through files
             (define-key map (kbd "s-]")          'cic:next-file-dired-pagedown)
             (define-key map (kbd "s-[")          'cic:previous-file-dired-pageup)
@@ -185,14 +189,15 @@
             (define-key map (kbd "H-$")          'cic:flyspell-word)
             (define-key map (kbd "H-<return>")   'cic:flyspell-word)
             (define-key map (kbd "H-S-<return>") 'flyspell-goto-next-error)
-            ;; (define-key map (kbd "H-,")          'cic:wordlist-current-word)
+            (define-key map (kbd "s-c ,")        'cic:wordlist-current-word)
             (define-key map (kbd "H-\\")         'indent-sexp)
-            (define-key map (kbd "H-b")          'ido-switch-buffer)
-            (define-key map (kbd "H-SPC")        'set-mark-command)
+            ;; (define-key map (kbd "H-b")          'ido-switch-buffer)
+            ;; (define-key map (kbd "H-SPC")        'set-mark-command)
+            ;; TODO: are these dangerous in some ways?
+            (define-key map (kbd "SPC")          'cic:read-only-pgdn-or-self-insert)
+            (define-key map (kbd "b")            'cic:read-only-pgup-or-self-insert)
             ;; standard keys
             (define-key map (kbd "H-x")          'cic:kill-region-only-active)
-            ;; TODO: don't really like this, it doesn't "flow" because too long of a reach
-            (define-key map (kbd "H-g")          'cic:kill-transient-windows)
             ;; (define-key map (kbd "H-z")          'scroll-down-command)
             ;; (define-key map (kbd "H-l")          'downcase-word)
             ;; (define-key map (kbd "H-u")          'upcase-word)
@@ -200,6 +205,19 @@
 (global-unset-key (kbd "<C-down-mouse-1>"))
 (define-key isearch-mode-map (kbd "M-/") 'isearch-repeat-forward)
 (define-key isearch-mode-map (kbd "M-?") 'isearch-repeat-backward)
+
+;; TODO: move
+(defun cic:read-only-pgdn-or-self-insert ()
+  (interactive)
+  (if buffer-read-only
+      (scroll-up-command)
+    (call-interactively 'self-insert-command)))
+
+(defun cic:read-only-pgup-or-self-insert ()
+  (interactive)
+  (if buffer-read-only
+      (scroll-down-command)
+    (call-interactively 'self-insert-command)))
 
 (define-minor-mode cic-emacs-keys-non-term-mode
   :global t

@@ -44,8 +44,10 @@
 ;;; Code:
 
 ;; keys
-(define-key org-mode-map (kbd "C-c c") 'org-code-region)
-(define-key org-mode-map (kbd "C-c q") 'org-quote-region)
+;; (define-key org-mode-map (kbd "C-c c") 'org-code-region)
+(define-key org-mode-map (kbd "s-c v") 'org-code-region)
+;; (define-key org-mode-map (kbd "C-c q") 'org-quote-region)
+(define-key org-mode-map (kbd "s-c q") 'org-quote-region)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; custom todo commands
@@ -84,7 +86,9 @@
 ;; TODO: move somewhere else?
 (define-key minibuffer-local-map (kbd "M-s")   'cic:backward-symbol)
 ;; this really helps diagnose problems and mismappings in the minibuffer
+(define-key minibuffer-local-map (kbd "s-h f") 'describe-function)
 (define-key minibuffer-local-map (kbd "s-h k") 'describe-key)
+(define-key minibuffer-local-map (kbd "s-h v") 'describe-variable)
 
 ;; a mode for some keys
 (define-minor-mode cic-emacs-keys-mode
@@ -210,13 +214,17 @@
 (defun cic:read-only-pgdn-or-self-insert ()
   (interactive)
   (if buffer-read-only
-      (scroll-up-command)
+      (if (derived-mode-p 'Info-mode)
+          (Info-scroll-up)
+        (scroll-up-command))
     (call-interactively 'self-insert-command)))
 
 (defun cic:read-only-pgup-or-self-insert ()
   (interactive)
   (if buffer-read-only
-      (scroll-down-command)
+      (if (derived-mode-p 'Info-mode)
+          (Info-scroll-down)
+        (scroll-down-command))
     (call-interactively 'self-insert-command)))
 
 (define-minor-mode cic-emacs-keys-non-term-mode

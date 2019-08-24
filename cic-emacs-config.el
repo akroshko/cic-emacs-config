@@ -445,6 +445,7 @@ read only."
   (define-key org-mode-map (kbd "M-h") 'kill-word)
   ;; TODO: take out once this is verified to not be needed
   (requiring-package (org-compat))
+  ;; TODO: add mini languages like awk
   (setq org-src-lang-modes '(("elisp"     . emacs-lisp)
                              ("sql"       . sql)
                              ("python"    . python-mode)
@@ -455,7 +456,7 @@ read only."
                              ("C"         . c)
                              ("cpp"       . c++)
                              ("C++"       . c++)
-                             ("java-mode" . java-mode)
+                             ("java"      . java)
                              ("sqlite"    . sql)
                              ("calc"      . fundamental)
                              ("asymptote" . asy)

@@ -42,6 +42,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; site specific settings
 (requiring-package (cl-lib))
+;; TODO: done as a test, makes some variables available
+(requiring-package (find-dired))
 
 ;; TODO: prevent dbus loading if already loaded, maybe?
 ;; TODO: fix this
@@ -62,10 +64,14 @@
 (add-to-list 'auto-mode-alist '("\\.pdf\\'\\|\\.djvu\\'" . fundamental-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; things that don't really require a require
+;; things that don't really require a requiring-package, but I use it anyways
 (requiring-package (cc-mode)
   (define-key c-mode-map (kbd "C-h") 'c-electric-delete-forward)
-  (define-key c-mode-map (kbd "C-d") 'next-line))
+  (define-key c-mode-map (kbd "C-d") 'next-line)
+  (define-key java-mode-map (kbd "C-h") 'c-electric-delete-forward)
+  (define-key java-mode-map (kbd "C-d") 'next-line)
+  ;; TODO: awk mode map
+  )
 
 ;; TODO: move this
 (requiring-package (man)

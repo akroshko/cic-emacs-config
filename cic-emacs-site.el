@@ -127,14 +127,6 @@ TODO broken, provided a diff cleanup function too!"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; my custom elisp code and keys
 ;; easypg
-(when (file-exists-p "~/.gpg-agent-info.env")
-  (let ((gpg-agent
-        ;; read the file
-         (s-trim-full (with-temp-buffer
-                  (insert-file-contents "~/.gpg-agent-info.env")
-                  (buffer-string)))))
-    ;; set the variable
-    (setenv "GPG_AGENT_INFO" gpg-agent)))
 (setq epa-file-select-keys 'silent
       epg-gpg-program "/usr/bin/gpg2")
 (epa-file-enable)
@@ -876,6 +868,7 @@ Useful for strings that don't fit nicely as words or symbols."
                          benchmark-init
                          biblio
                          capture
+                         cdlatex
                          centered-cursor-mode
                          clippy
                          company

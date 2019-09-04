@@ -44,10 +44,10 @@
 ;;; Code:
 
 ;; keys
-;; (define-key org-mode-map (kbd "C-c c") 'org-code-region)
-(define-key org-mode-map (kbd "s-c v") 'org-code-region)
-;; (define-key org-mode-map (kbd "C-c q") 'org-quote-region)
-(define-key org-mode-map (kbd "s-c q") 'org-quote-region)
+;; TODO: update these sometime and put into a requiring org-mode
+(define-key org-mode-map (kbd "M-g c") 'org-babel-demarcate-block)
+(define-key org-mode-map (kbd "M-g q") 'org-quote-region)
+(define-key org-mode-map (kbd "M-g v") 'org-code-region)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; custom todo commands
@@ -250,9 +250,9 @@
 (define-minor-mode cic-emacs-keys-non-dired-mode
   :global t
   :keymap (let ((map (make-sparse-keymap)))
-            (define-key map (kbd "M-o")     'cic:occur-in-buffer)
+            (define-key map (kbd "M-o")   'cic:occur-in-buffer)
             ;; TODO: used globally for something else
-            ;; (define-key map (kbd "H-d") 'cic:insert-date-time-stamp)
+            (define-key map (kbd "M-g d") 'cic:insert-date-time-stamp)
             map))
 
 (defun wdired-change-to-dired-mode--disable-keys (orig-fun &rest args)

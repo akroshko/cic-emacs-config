@@ -469,6 +469,7 @@ read only."
   (set-face-background 'org-code "light blue")
   ;; TODO: yellowish, would be great for BEGIN_QUOTE
   ;; (set-face-foreground 'org-quote "#8b6508")
+  (modify-syntax-entry ?~ "." org-mode-syntax-table)
   (setq org-archive-location "%s.archive::"
         org-todo-keywords    '((sequence "NOTE(!@)"
                                          "REFILE(!@)"

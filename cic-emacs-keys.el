@@ -183,9 +183,8 @@
             (define-key map (kbd "s-0")          'cic:copy-file-name-to-kill-ring)
             ;; universal align
             (define-key map (kbd "s-q")          'align-current)
-            ;; TODO: I dont' use some of these much
-            (define-key map (kbd "H->")          'next-buffer)
-            (define-key map (kbd "H-<")          'previous-buffer)
+            (define-key map (kbd "M-]")          'next-buffer)
+            (define-key map (kbd "M-]")          'previous-buffer)
             (define-key map (kbd "H-)")          'cic:org-end-of-next-heading)
             (define-key map (kbd "H-(")          'cic:org-end-of-prev-heading)
             (define-key map (kbd "H-}")          'cic:next-file-dired)

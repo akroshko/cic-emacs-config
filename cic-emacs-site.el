@@ -68,6 +68,8 @@
 (requiring-package (cc-mode)
   (define-key c-mode-map (kbd "C-h") 'c-electric-delete-forward)
   (define-key c-mode-map (kbd "C-d") 'next-line)
+  (define-key c++-mode-map (kbd "C-h") 'c-electric-delete-forward)
+  (define-key c++-mode-map (kbd "C-d") 'next-line)
   (define-key java-mode-map (kbd "C-h") 'c-electric-delete-forward)
   (define-key java-mode-map (kbd "C-d") 'next-line)
   ;; TODO: awk mode map
@@ -99,6 +101,8 @@ TODO broken, provided a diff cleanup function too!"
 (add-to-list 'auto-mode-alist '("bash_logout"         . sh-mode))
 (add-to-list 'auto-mode-alist '("inputrc"             . sh-mode))
 (add-to-list 'auto-mode-alist '(".inputrc"            . sh-mode))
+(add-to-list 'auto-mode-alist '("gimprc"              . conf-mode ))
+(add-to-list 'auto-mode-alist '("gimp_sessionrc"      . conf-mode ))
 (add-to-list 'auto-mode-alist '("psqlrc"              . sql-mode))
 
 (requiring-package (sh-script)
@@ -538,6 +542,7 @@ flyspell-mode."
   (define-key paredit-mode-map (kbd "C-d")   'next-line)
   (define-key paredit-mode-map (kbd "C-h")   'paredit-forward-delete)
   (define-key paredit-mode-map (kbd "M-h")   'paredit-forward-kill-word)
+  (define-key paredit-mode-map (kbd "M-s")   'cic:backward-symbol)
   (define-key paredit-mode-map (kbd "C-M-s") 'paredit-backward)
   (define-key paredit-mode-map (kbd "C-M-b") nil)
   (define-key paredit-mode-map (kbd "M-d")   'paredit-splice-sexp)

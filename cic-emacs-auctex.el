@@ -47,6 +47,11 @@
   nil
   "Stores the current source filename for things such as includeonly.")
 
+(defvar cic:enable-synctex
+  nil
+  "Disables synctex in case pdf view does not support it.")
+(setq cic:enable-synctex t)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; AucTeX
 ;; https://www.gnu.org/software/auctex/manual/auctex/Advice-for-non_002dprivileged-users.html#Advice-for-non_002dprivileged-users
@@ -95,11 +100,14 @@
                    (add-hook 'LaTeX-mode-hook 'cic:latex-disable-electic-indent)
                    (add-hook 'TeX-mode-hook 'cic:latex-disable-electic-indent)
                    (setq TeX-view-program-list
-                         ;; TODO: how to maximize by default
-                         '(("zathura" ("nohup zathura-tex-local.sh %o" (mode-io-correlate " --synctex-forward %n:0:%b --synctex-editor-command=\"launch-emacsclient noframe +%{line} %{input}\"")) "zathura")
-                           ;; TODO: disable evince for now
-                           ;; ("Evince" ("evince" (mode-io-correlate " -i %(outpage)") " %o"))
-                           ))
+                         (if cic:enable-synctex
+                             ;; TODO: how to maximize by default
+                             '(("zathura" ("nohup zathura-tex-local.sh %o" (mode-io-correlate " --synctex-forward %n:0:%b --synctex-editor-command=\"launch-emacsclient noframe +%{line} %{input}\"")) "zathura")
+                               ;; TODO: disable evince for now
+                               ;; ("Evince" ("evince" (mode-io-correlate " -i %(outpage)") " %o"))
+                               )
+                           ;; TODO: do I want more commands... page number etc.???
+                           '(("zathura" ("nohup zathura-tex-local.sh %o") "zathura"))))
                    (setq TeX-view-program-selection
                          '((output-dvi "DVI Viewer")
                            (output-pdf "zathura")
@@ -229,12 +237,15 @@
                        ret))
                    (advice-add 'TeX-BibTeX-sentinel :around #'TeX-BibTeX-sentinel-bibtex-always-successful)
                    (defun TeX-LaTeX-current-build-filename (orig-fun &rest args)
+                     "Grab the current build filename to a variable."
                      (setq cic:current-build-filename buffer-file-name)
                      (apply orig-fun args))
                    (advice-add 'TeX-command-master :around #'TeX-LaTeX-current-build-filename)
                    (advice-add 'TeX-command        :around #'TeX-LaTeX-current-build-filename)
                    (defun TeX-LaTeX-no-view (orig-fun &rest args)
-                     (unless (TeX-process (TeX-master-file))
+                     "Do not try to view if process already happening."
+                     (if (TeX-process (TeX-master-file))
+                         (message "Not running TeX-view due to existing process.")
                        (apply orig-fun args)))
                    (advice-add 'TeX-view :around #'TeX-LaTeX-no-view)
                    ;; TODO: make this act more like org mode

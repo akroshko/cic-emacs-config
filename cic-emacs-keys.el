@@ -170,7 +170,7 @@
             ;; s-m == system manager
             (define-key map (kbd "s-m p")        'cic:create-password-insert)
             ;; TODO: shift key instead?
-            (define-key map (kbd "s-m M-p")      'cic:create-password-insert-select)
+            (define-key map (kbd "s-m P")        'cic:create-password-insert-select)
             ;; o == Open, meaning I'm opening outside of Emacs
             (define-key map (kbd "s-o c")        'cic:browse-url-at-point-conkeror)
             (define-key map (kbd "s-o f")        'cic:browse-url-at-point-firefox)

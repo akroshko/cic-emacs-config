@@ -6,7 +6,7 @@
 ;; Author: Andrew Kroshko
 ;; Maintainer: Andrew Kroshko <akroshko.public+devel@gmail.com>
 ;; Created: Thu, Aug 27, 2015
-;; Version: 20190804
+;; Version: 20191209
 ;; URL: https://github.com/akroshko/cic-emacs-common
 ;;
 ;; This file is NOT part of GNU Emacs.
@@ -101,8 +101,8 @@ TODO broken, provided a diff cleanup function too!"
 (add-to-list 'auto-mode-alist '("bash_logout"         . sh-mode))
 (add-to-list 'auto-mode-alist '("inputrc"             . sh-mode))
 (add-to-list 'auto-mode-alist '(".inputrc"            . sh-mode))
-(add-to-list 'auto-mode-alist '("gimprc"              . conf-mode ))
-(add-to-list 'auto-mode-alist '("gimp_sessionrc"      . conf-mode ))
+(add-to-list 'auto-mode-alist '("gimprc"              . conf-mode))
+(add-to-list 'auto-mode-alist '("gimp_sessionrc"      . conf-mode))
 (add-to-list 'auto-mode-alist '("psqlrc"              . sql-mode))
 
 (requiring-package (sh-script)
@@ -836,9 +836,14 @@ Useful for strings that don't fit nicely as words or symbols."
   (setq vc-follow-symlinks t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; w3m
+;; w3m
 (setq w3m-default-display-inline-images t
       w3m-use-cookies t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; vlf
+;; TODO: see https://github.com/m00natic/vlfi
+;; (requiring-package (vlf))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; vline
@@ -951,6 +956,7 @@ Useful for strings that don't fit nicely as words or symbols."
                          ssh-tunnels
                          systemd
                          tracwiki-mode
+                         vlf
                          w3m
                          wanderlust
                          with-editor
